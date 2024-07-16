@@ -1,5 +1,13 @@
 import React, {useState} from 'react';
-import {View, TextInput, Button, Text, Image, StyleSheet} from 'react-native';
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {RootStackParamList} from '../types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -12,7 +20,7 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
-    const response = await fetch('http://10.0.2.2:8080/api/login', {
+    const response = await fetch('http://10.0.2.2:8080/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,6 +54,14 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
       />
       {error ? <Text style={{color: 'red'}}>{error}</Text> : null}
       <Button title="Iniciar Sesión" onPress={handleLogin} />
+      <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+        <Text style={styles.forgotPassword}>He olvidado mi contraseña</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.registerLink}>
+          ¿No tienes una cuenta? Regístrate
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -70,6 +86,17 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginBottom: 10,
+  },
+  forgotPassword: {
+    marginTop: 16,
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
+  registerLink: {
+    marginTop: 20,
+    color: 'blue',
+    textDecorationLine: 'underline',
+    textAlign: 'center',
   },
 });
 
