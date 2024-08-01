@@ -1,23 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  View,
-  TextInput,
   Button,
-  Text,
   Image,
   StyleSheet,
+  Text,
+  TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {RootStackParamList} from '../types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useAuth} from '../AuthContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const LoginScreen: React.FC<Props> = ({navigation}) => {
+  const {login} = useAuth();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    // Limpiar las credenciales cuando se accede a la pantalla de inicio de sesión
+    setUsername('');
+    setPassword('');
+    setError('');
+  }, []);
 
   const handleLogin = async () => {
     const response = await fetch('http://10.0.2.2:8080/api/auth/login', {
@@ -29,7 +38,7 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
     });
     const data = await response.json();
     if (response.ok) {
-      await AsyncStorage.setItem('token', data.token);
+      await login(data.token);
       navigation.navigate('Home');
     } else {
       setError('Usuario o contraseña incorrectos');
