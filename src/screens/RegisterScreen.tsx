@@ -6,43 +6,74 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Modal,
+  Alert,
 } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
 const RegisterScreen: React.FC<Props> = ({navigation}) => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [role, setRole] = useState<string>('Selecciona un rol');
+  const [message, setMessage] = useState<string>('');
+  const [numMesas, setNumMesas] = useState<string>('');
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const handleRegister = async () => {
-    if (password !== confirmPassword) {
-      setMessage('Las contraseñas no coinciden');
-      return;
-    }
+    const response = await fetch('http://10.0.2.2:8080/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({username, email, password, role}), // Include role in the request body
+    });
 
+    if (response.ok) {
+      const data = await response.json();
+      const message = data.message;
+
+      setMessage(message);
+      if (message === 'Primer usuario registrado') {
+        setModalVisible(true);
+      }
+      Alert.alert('Registro', 'Usuario registrado correctamente');
+      navigation.replace('Login');
+    } else {
+      const errorData = await response.json();
+      setMessage(errorData.message || 'Error durante el registro');
+    }
+  };
+
+  const handleInitializeMesas = async () => {
     try {
-      const response = await fetch('http://10.0.2.2:8080/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `http://10.0.2.2:8080/api/mesas/${numMesas}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-        body: JSON.stringify({username, email, password}),
-      });
+      );
+
+      const data = await response.json();
 
       if (response.ok) {
-        setMessage('Registro exitoso');
-        setTimeout(() => navigation.navigate('Login'), 2000);
+        setMessage(data.message || 'Mesas inicializadas correctamente');
+        setModalVisible(false);
+        navigation.navigate('Login');
       } else {
-        const errorData = await response.text();
-        setMessage(errorData);
+        setMessage(data.message || 'Error al inicializar mesas');
       }
     } catch (error) {
-      setMessage('Error al conectar con el servidor');
+      console.error('Error during mesa initialization:', error);
+      setMessage('Error al inicializar mesas');
     }
   };
 
@@ -75,6 +106,14 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
         secureTextEntry
         style={styles.input}
       />
+      <Picker
+        selectedValue={role}
+        onValueChange={itemValue => setRole(itemValue)}
+        style={styles.picker}>
+        <Picker.Item label="Selecciona un rol" value="Selecciona un rol" />
+        <Picker.Item label="Camarero" value="CAMARERO" />
+        <Picker.Item label="Cocinero" value="COCINERO" />
+      </Picker>
       <Button title="Registrar" onPress={handleRegister} />
       {message ? <Text style={styles.message}>{message}</Text> : null}
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -82,6 +121,21 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
           ¿Ya tienes una cuenta? Inicia Sesión
         </Text>
       </TouchableOpacity>
+      <Modal visible={modalVisible} transparent={true} animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Inicializar Mesas</Text>
+            <TextInput
+              placeholder="Número de mesas"
+              value={numMesas}
+              onChangeText={setNumMesas}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+            <Button title="Inicializar" onPress={handleInitializeMesas} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -92,6 +146,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     backgroundColor: '#f0f8ff',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    marginBottom: 10,
   },
   title: {
     fontSize: 24,
@@ -116,6 +186,11 @@ const styles = StyleSheet.create({
     color: 'blue',
     textAlign: 'center',
     textDecorationLine: 'underline',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    marginBottom: 10,
   },
 });
 
