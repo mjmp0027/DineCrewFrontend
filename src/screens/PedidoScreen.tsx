@@ -1,19 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Alert, ActivityIndicator} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useFetch from '../hooks/useFetch';
 import AccountModal from '../components/AccountModal';
+import CategorySelector from '../components/CategorySelector';
+import ItemList from '../components/ItemList';
+import Footer from '../components/Footer';
+import styles from '../styles/PedidoScreenStyles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Pedido'>;
 
@@ -44,7 +39,7 @@ const PedidoScreen: React.FC<Props> = ({route, navigation}) => {
       setIsLoading(false);
     };
     fetchProducts();
-  }, []);
+  }, [fetchCsvData]);
 
   useEffect(() => {
     if (items && Array.isArray(items) && items.length > 0) {
@@ -199,51 +194,23 @@ const PedidoScreen: React.FC<Props> = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        {Object.keys(itemsByCategory).map(cat => (
-          <TouchableOpacity
-            key={cat}
-            onPress={() => setCategory(cat)}
-            style={[
-              styles.headerButton,
-              category === cat && styles.activeButton,
-            ]}>
-            <Text style={styles.headerText}>{cat}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <FlatList
-        data={itemsByCategory[category]}
-        keyExtractor={item => item}
-        renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <Text style={styles.itemText}>{item}</Text>
-            <View style={styles.counter}>
-              <TouchableOpacity
-                onPress={() => decrementItem(item)}
-                style={styles.counterButton}>
-                <Text style={styles.counterButtonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.counterText}>{selectedItems[item] || 0}</Text>
-              <TouchableOpacity
-                onPress={() => incrementItem(item)}
-                style={styles.counterButton}>
-                <Text style={styles.counterButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
+      <CategorySelector
+        categories={Object.keys(itemsByCategory)}
+        selectedCategory={category}
+        onSelectCategory={setCategory}
       />
-      <View style={styles.footer}>
-        <Text style={styles.mesaText}>Mesa: {mesa}</Text>
-        <View style={styles.buttonContainer}>
-          <Button
-            title={editing ? 'Actualizar Pedido' : 'Enviar Pedido'}
-            onPress={sendPedido}
-          />
-          <Button title="Ver Cuenta" onPress={calculateTotalAndItems} />
-        </View>
-      </View>
+      <ItemList
+        items={itemsByCategory[category]}
+        selectedItems={selectedItems}
+        onIncrementItem={incrementItem}
+        onDecrementItem={decrementItem}
+      />
+      <Footer
+        mesa={mesa}
+        isEditing={editing}
+        onSendPedido={sendPedido}
+        onViewAccount={calculateTotalAndItems}
+      />
       {accountDetails && (
         <AccountModal
           visible={isModalVisible}
@@ -255,77 +222,5 @@ const PedidoScreen: React.FC<Props> = ({route, navigation}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10,
-    backgroundColor: '#6200EE',
-  },
-  headerButton: {
-    padding: 10,
-  },
-  headerText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  activeButton: {
-    borderBottomWidth: 2,
-    borderBottomColor: 'white',
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  itemText: {
-    fontSize: 18,
-  },
-  counter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  counterButton: {
-    padding: 10,
-    backgroundColor: '#6200EE',
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-  counterButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  counterText: {
-    fontSize: 18,
-  },
-  footer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
-    alignItems: 'center',
-  },
-  mesaText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-});
 
 export default PedidoScreen;

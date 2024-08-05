@@ -1,46 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {Alert, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types';
-import Icon from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import decodeJwtToken from '../decodeJwtToken';
+import {HomeScreenStyles as styles} from '../styles/HomeScreenStyles';
+import MenuBar from '../components/MenuBar';
+import ContentBox from '../components/ContentBox';
+import useUserRole from '../hooks/useUserRole';
 import {useAuth} from '../AuthContext';
+import decodeJwtToken from '../utils/decodeJwtToken';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const HomeScreen: React.FC<Props> = ({navigation}) => {
   const {logout} = useAuth();
-  const [role, setRole] = useState<string | null>(null);
+  const role = useUserRole();
 
-  useEffect(() => {
-    const getUserRole = async () => {
-      const token = await AsyncStorage.getItem('token');
-      if (token) {
-        const decodedToken = decodeJwtToken(token);
-        const username = decodedToken.sub;
-
-        const response = await fetch(
-          `http://10.0.2.2:8080/api/users/${username}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        if (response.ok) {
-          const userData = await response.json();
-          setRole(userData.role);
-        } else {
-          Alert.alert('Error', 'No se pudo obtener el rol del usuario.');
-        }
-      }
-    };
-
-    getUserRole();
-  }, []);
   const handleLogout = async () => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
@@ -67,91 +42,34 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.menu}>
-        <Text style={styles.menuText}>Menú</Text>
-        <View style={styles.icons}>
-          <TouchableOpacity
-            onPress={() =>
-              Alert.alert('Notificaciones', 'No tienes notificaciones nuevas.')
-            }>
-            <Icon name="notifications-outline" size={25} style={styles.icon} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleLogout}>
-            <Icon name="person-circle-outline" size={25} style={styles.icon} />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <MenuBar
+        onNotificationsPress={() =>
+          Alert.alert('Notificaciones', 'No tienes notificaciones nuevas.')
+        }
+        onLogoutPress={handleLogout}
+      />
       <View style={styles.content}>
         {role === 'CAMARERO' && (
           <>
-            <TouchableOpacity
-              style={styles.box}
-              onPress={() => navigation.navigate('Mesas')}>
-              <Text style={styles.boxText}>Mesas</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.box}
-              onPress={() => navigation.navigate('Comandas')}>
-              <Text style={styles.boxText}>Mis Comandas</Text>
-            </TouchableOpacity>
+            <ContentBox
+              title="Mesas"
+              onPress={() => navigation.navigate('Mesas')}
+            />
+            <ContentBox
+              title="Mis Comandas"
+              onPress={() => navigation.navigate('Comandas')}
+            />
           </>
         )}
         {role === 'COCINERO' && (
-          <TouchableOpacity
-            style={styles.box}
-            onPress={() => navigation.navigate('Comandas')}>
-            <Text style={styles.boxText}>Comandas</Text>
-          </TouchableOpacity>
+          <ContentBox
+            title="Comandas"
+            onPress={() => navigation.navigate('Comandas')}
+          />
         )}
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  menu: {
-    height: 60,
-    backgroundColor: '#6200EE',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  menuText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  icons: {
-    flexDirection: 'row',
-  },
-  icon: {
-    marginLeft: 15,
-    color: 'white',
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  box: {
-    width: 150,
-    height: 150,
-    backgroundColor: '#6200EE',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    borderRadius: 10,
-  },
-  boxText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
 
 export default HomeScreen;

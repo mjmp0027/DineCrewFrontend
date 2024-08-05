@@ -6,7 +6,7 @@ import React, {
   ReactNode,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import decodeJwtToken from './decodeJwtToken';
+import decodeJwtToken from './utils/decodeJwtToken';
 
 interface AuthContextType {
   user: any;
