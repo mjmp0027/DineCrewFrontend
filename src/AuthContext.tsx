@@ -11,7 +11,7 @@ import decodeJwtToken from './utils/decodeJwtToken';
 interface AuthContextType {
   user: any;
   loading: boolean;
-  login: (token: string) => Promise<void>;
+  login: (token: string, userId: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -58,8 +58,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     checkToken();
   }, []);
 
-  const login = async (token: string) => {
+  const login = async (token: string, userId: string) => {
     await AsyncStorage.setItem('token', token);
+    await AsyncStorage.setItem('userId', userId);
     setUser(decodeJwtToken(token));
   };
 

@@ -21,4 +21,17 @@ export const MenuBarStyles = StyleSheet.create({
     marginLeft: 15,
     color: 'white',
   },
+  badgeContainer: {
+    position: 'absolute',
+    right: -10,
+    top: 15,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 12,
+  },
 });

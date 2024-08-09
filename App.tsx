@@ -31,7 +31,7 @@ const AppNavigator = () => {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Mesas" component={MesasScreen} />
           <Stack.Screen name="Comandas" component={ComandasScreen} />
-          <Stack.Screen name={'Pedido'} component={PedidoScreen} />
+          <Stack.Screen name="Pedido" component={PedidoScreen} />
         </>
       ) : (
         <>
@@ -56,34 +56,5 @@ const App: React.FC = () => {
     </AuthProvider>
   );
 };
-/*const App: React.FC = () => {
-  return (
-    <AuthProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{headerBackVisible: false}}
-          />
-          <Stack.Screen
-            name="ForgotPassword"
-            component={ForgotPasswordScreen}
-          />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name={'Mesas'} component={MesasScreen} />
-          <Stack.Screen name={'Comandas'} component={ComandasScreen} />
-          <Stack.Screen name={'Pedido'} component={PedidoScreen} />
-          <Stack.Screen name={'EditPedido'} component={EditPedidoScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthProvider>
-  );
-};*/
 
 export default App;

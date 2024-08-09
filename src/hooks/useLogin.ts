@@ -20,7 +20,7 @@ const useLogin = () => {
     });
     const data = await response.json();
     if (response.ok) {
-      await login(data.token);
+      await login(data.token, data.userId);
       navigation.navigate('Home');
     } else {
       setError('Usuario o contraseña incorrectos');
