@@ -30,13 +30,14 @@ const MesaList: React.FC<MesaListProps> = ({mesas, userId, navigation}) => {
       />
     );
   };
+
   return (
     <FlatList
       data={mesas}
       keyExtractor={item => item.id}
       renderItem={renderItem}
       numColumns={3}
-      contentContainerStyle={styles.container}
+      contentContainerStyle={styles.listContainer}
     />
   );
 };
