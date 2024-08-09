@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "747542371251",
+    "project_id": "dinecrew-c0451",
+    "storage_bucket": "dinecrew-c0451.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747542371251:android:8255f2afe7b3833137c9c6",
+        "android_client_info": {
+          "package_name": "com.dinecrew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD8G0A-Y8umbSe_OAe8WyMFeNT5JtJN-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
