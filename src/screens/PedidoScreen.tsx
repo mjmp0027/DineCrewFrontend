@@ -39,7 +39,7 @@ const PedidoScreen: React.FC<Props> = ({route, navigation}) => {
       setIsLoading(false);
     };
     fetchProducts();
-  }, [fetchCsvData]);
+  }, []);
 
   useEffect(() => {
     if (items && Array.isArray(items) && items.length > 0) {
@@ -94,7 +94,7 @@ const PedidoScreen: React.FC<Props> = ({route, navigation}) => {
           navigation.goBack();
         }
       } else {
-        Alert.alert('Error', 'Hubo un problema al enviar el pedido.');
+        Alert.alert('Error', 'Hubo un problema al enviar el pedido.'); // TODO: poner el mensaje de error que devuelve el backend en todos estos sitios
       }
     }
   };

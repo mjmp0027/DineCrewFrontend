@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Alert} from 'react-native';
+import {View, Alert, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types';
 import {ComandasScreenStyles as styles} from '../styles/ComandasScreenStyles';
@@ -57,7 +57,20 @@ const ComandasScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <PedidoList pedidos={pedidos} onPressItem={handleOrderPress} />
+      {pedidos.length === 0 ? (
+        <View style={styles.noPedidosContainer}>
+          <Text style={styles.noPedidosText}>
+            No tienes pedidos actualmente.
+          </Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Mesas')}>
+            <Text style={styles.buttonText}>Ir a Mesas</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <PedidoList pedidos={pedidos} onPressItem={handleOrderPress} />
+      )}
     </View>
   );
 };
