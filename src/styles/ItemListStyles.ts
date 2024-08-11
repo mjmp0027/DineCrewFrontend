@@ -18,7 +18,7 @@ export const ItemListStyles = StyleSheet.create({
   },
   counterButton: {
     padding: 10,
-    backgroundColor: '#6200EE',
+    backgroundColor: '#6e0a0a',
     borderRadius: 5,
     marginHorizontal: 5,
   },

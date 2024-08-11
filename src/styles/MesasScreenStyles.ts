@@ -1,29 +1,39 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
+
+const screenHeight = Dimensions.get('window').height;
+const adjustedHeight = (screenHeight * 0.94) / 5;
 
 export const MesasScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 10,
+    backgroundColor: '#ffffff',
   },
   listContainer: {
     flexGrow: 1,
-    alignItems: 'center',
   },
-  addButton: {
+  mesaBox: {
+    width: '100%',
+    height: adjustedHeight,
+    justifyContent: 'flex-end',
+    borderRadius: 0,
+    overflow: 'hidden',
+  },
+  mesaImage: {
+    width: '100%',
+    height: '100%',
     position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#007bff',
-    borderRadius: 50,
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
+    resizeMode: 'cover',
   },
-  addButtonText: {
-    fontSize: 24,
-    color: '#fff',
+  mesaText: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
   },
 });

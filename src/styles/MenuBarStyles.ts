@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 export const MenuBarStyles = StyleSheet.create({
   menu: {
     height: 60,
-    backgroundColor: '#6200EE',
+    backgroundColor: '#6e0a0a',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

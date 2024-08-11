@@ -150,19 +150,25 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         {role === 'CAMARERO' && (
           <>
             <ContentBox
+              imageSource={require('../assets/mesas.jpg')}
               title="Mesas"
               onPress={() => navigation.navigate('Mesas')}
+              style={styles.halfScreen}
             />
             <ContentBox
+              imageSource={require('../assets/comandas.jpg')}
               title="Mis Comandas"
               onPress={() => navigation.navigate('Comandas')}
+              style={styles.halfScreen}
             />
           </>
         )}
         {role === 'COCINERO' && (
           <ContentBox
+            imageSource={require('../assets/comandas.jpg')}
             title="Comandas"
             onPress={() => navigation.navigate('Comandas')}
+            style={styles.halfScreen}
           />
         )}
       </View>

@@ -5,7 +5,7 @@ export const CategorySelectorStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 10,
-    backgroundColor: '#6200EE',
+    backgroundColor: '#6e0a0a',
   },
   headerButton: {
     padding: 10,
