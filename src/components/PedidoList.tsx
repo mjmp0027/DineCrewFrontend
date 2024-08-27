@@ -6,9 +6,14 @@ import {PedidoListStyles as styles} from '../styles/PedidoListStyles';
 type Props = {
   pedidos: Pedido[];
   onPressItem: (item: Pedido) => void;
+  selectedCategory: 'PENDIENTE' | 'EN_PREPARACION' | 'LISTO';
 };
 
-const PedidoList: React.FC<Props> = ({pedidos, onPressItem}) => {
+const PedidoList: React.FC<Props> = ({
+  pedidos,
+  onPressItem,
+  selectedCategory,
+}) => {
   const renderItem = ({item}: {item: Pedido}) => {
     let containerStyle;
     switch (item.estado) {
@@ -40,9 +45,13 @@ const PedidoList: React.FC<Props> = ({pedidos, onPressItem}) => {
     );
   };
 
+  const filteredPedidos = pedidos.filter(
+    pedido => pedido.estado === selectedCategory,
+  );
+
   return (
     <FlatList
-      data={pedidos}
+      data={filteredPedidos}
       keyExtractor={item => item.id}
       renderItem={renderItem}
     />

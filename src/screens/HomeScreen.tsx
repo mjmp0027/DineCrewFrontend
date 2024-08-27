@@ -136,7 +136,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       fetchNotifications();
-    }, []),
+    }, [notificationCount]),
   );
 
   return (
@@ -187,6 +187,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                 <View style={styles.notificationItem}>
                   <Text>{item.titulo}</Text>
                   <Text>{item.mensaje}</Text>
+                  <Text>{item.items.join(', ')}</Text>
                   <Text>{new Date(item.timestamp).toLocaleString()}</Text>
                 </View>
               )}

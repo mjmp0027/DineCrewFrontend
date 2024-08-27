@@ -94,7 +94,8 @@ const PedidoScreen: React.FC<Props> = ({route, navigation}) => {
           navigation.goBack();
         }
       } else {
-        Alert.alert('Error', 'Hubo un problema al enviar el pedido.'); // TODO: poner el mensaje de error que devuelve el backend en todos estos sitios
+        const errordata = await response.text();
+        Alert.alert('Error', errordata);
       }
     }
   };
@@ -110,7 +111,6 @@ const PedidoScreen: React.FC<Props> = ({route, navigation}) => {
           },
         },
       );
-
       if (response.ok) {
         const data = await response.json();
         let total = 0;
@@ -132,7 +132,6 @@ const PedidoScreen: React.FC<Props> = ({route, navigation}) => {
             }
           });
         });
-
         setAccountDetails({items: cuentaItems, total});
         setModalVisible(true);
       } else {

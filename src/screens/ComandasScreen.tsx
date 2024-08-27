@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, Alert, Text, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types';
 import {ComandasScreenStyles as styles} from '../styles/ComandasScreenStyles';
@@ -14,6 +14,9 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Comandas'>;
 const ComandasScreen: React.FC<Props> = ({navigation}) => {
   const {pedidos, fetchPedidos} = usePedidos();
   const role = useUserRole();
+  const [selectedCategory, setSelectedCategory] = useState<
+    'PENDIENTE' | 'EN_PREPARACION' | 'LISTO'
+  >('PENDIENTE');
 
   const handleOrderPress = async (item: Pedido) => {
     if (item.estado === 'LISTO') {
@@ -55,21 +58,57 @@ const ComandasScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
+  const filteredPedidos = pedidos.filter(
+    pedido => pedido.estado === selectedCategory,
+  );
+
+  // Helper function to capitalize the first letter
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
   return (
     <View style={styles.container}>
-      {pedidos.length === 0 ? (
+      {pedidos.length > 0 && (
+        <View style={styles.menuContainer}>
+          {['PENDIENTE', 'EN_PREPARACION', 'LISTO'].map(category => (
+            <TouchableOpacity
+              key={category}
+              onPress={() =>
+                setSelectedCategory(
+                  category as 'PENDIENTE' | 'EN_PREPARACION' | 'LISTO',
+                )
+              }
+              style={[
+                styles.menuButton,
+                selectedCategory === category && styles.menuButtonActive,
+              ]}>
+              <Text
+                style={[
+                  styles.menuButtonText,
+                  selectedCategory === category && styles.activeMenuText,
+                ]}>
+                {capitalizeFirstLetter(category.replace('_', ' '))}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
+      {filteredPedidos.length === 0 ? (
         <View style={styles.noPedidosContainer}>
           <Text style={styles.noPedidosText}>
-            No tienes pedidos actualmente.
+            No tienes pedidos{' '}
+            {capitalizeFirstLetter(selectedCategory.toLowerCase())}s
+            actualmente.
           </Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Mesas')}>
-            <Text style={styles.buttonText}>Ir a Mesas</Text>
-          </TouchableOpacity>
         </View>
       ) : (
-        <PedidoList pedidos={pedidos} onPressItem={handleOrderPress} />
+        <PedidoList
+          pedidos={filteredPedidos}
+          onPressItem={handleOrderPress}
+          selectedCategory={selectedCategory}
+        />
       )}
     </View>
   );

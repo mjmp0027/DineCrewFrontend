@@ -1,8 +1,14 @@
 import {Pedido} from '../types/Pedido';
 
-const fetchPedidos = async (token: string): Promise<Pedido[]> => {
+const fetchPedidos = async (
+  token: string,
+  userId: string | null,
+  role: string | null,
+): Promise<Pedido[]> => {
   try {
-    const response = await fetch('http://10.0.2.2:8080/api/pedidos', {
+    const url = `http://10.0.2.2:8080/api/pedidos?userId=${userId}&role=${role}`;
+
+    const response = await fetch(url.toString(), {
       headers: {
         Authorization: `Bearer ${token}`,
       },

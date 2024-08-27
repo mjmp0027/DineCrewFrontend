@@ -20,7 +20,7 @@ const useRegister = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({username, email, password, role}),
+      body: JSON.stringify({username, email, password, confirmPassword, role}),
     });
 
     if (response.ok) {
